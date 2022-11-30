@@ -1,0 +1,5 @@
+-e helpers
+IPython
+numpy
+pre-commit
+requests
