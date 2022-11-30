@@ -15,7 +15,22 @@ def timeit(func):
     return wrapper
 
 
-def download(day: int, year: int = 2022) -> str:
+def get_year_and_day() -> tuple[int, int]:
+    from pathlib import Path
+
+    cwd = Path.cwd()
+    day_s = cwd.name
+    year_s = cwd.parent.name
+
+    try:
+        day, year = int(day_s.strip('day')), int(year_s.strip('aoc'))
+    except ValueError:
+        raise ValueError(f'Cannot get day/year from working dir: {cwd}')
+
+    return year, day
+
+
+def download(day: int, year: int) -> str:
     from cookie import cookie
     import requests
 
@@ -28,14 +43,9 @@ def download(day: int, year: int = 2022) -> str:
 
 
 def download_entry():
-    import argparse
+    year, day = get_year_and_day()
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--day', type=int)
-    parser.add_argument('-y', '--year', type=int, default=2022)
-    args = parser.parse_args()
-
-    s = download(day=args.day, year=args.year)
+    s = download(day=day, year=year)
 
     with open('data.txt', 'w') as f:
         f.writelines(s)
@@ -58,12 +68,12 @@ def remove_tags(text: str) -> str:
     return ''.join(ElementTree.fromstring(text).itertext())
 
 
-def submit(answer: int, part: int, day: int, year: int = 2022):
+def submit(answer: int, part: int, day: int, year: int):
     from cookie import cookie
     import re
     import requests
 
-    re_ANSWER = re.compile(r'<article>(<p>.*?></p>)')
+    re_ANSWER = re.compile(r'<article>(<p>.*?</p>)')
 
     url = f'https://adventofcode.com/{year}/day/{day}/answer'
 
@@ -84,16 +94,15 @@ def submit_entry():
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument('-d', '--day', type=int)
-    parser.add_argument('-y', '--year', type=int, default=2022)
     parser.add_argument('-p', '--part', type=int, choices=(1, 2))
     parser.add_argument('-a', '--answer', type=int)
-
     args = parser.parse_args()
+
+    year, day = get_year_and_day()
 
     submit(
         answer=args.answer,
         part=args.part,
-        day=args.day,
-        year=args.year,
+        day=day,
+        year=year,
     )
