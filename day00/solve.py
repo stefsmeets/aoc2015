@@ -7,7 +7,7 @@ import numpy as np
 from helpers import timeit
 
 
-DATA = Path(__file__).with_name('data.txt').read_text()
+DATA = Path(__file__).with_name('data.txt')
 
 
 @timeit
@@ -42,9 +42,11 @@ def main() -> int:
     parser.add_argument('data', nargs='?', default=DATA)
     args = parser.parse_args()
 
+    data = Path(args.data).read_text()
+
     for i in args.parts:
         func = (..., part1, part2)[i]
-        func(args.data)
+        func(data)
 
     return 0
 
