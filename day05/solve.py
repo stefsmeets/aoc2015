@@ -20,50 +20,34 @@ def cond3(s):
     return sum(c in 'aeiou' for c in s) >= 3
 
 
-@timeit
-def part1(s: str):
-    lines = s.splitlines()
-
-    total_nice = 0
-
-    for line in lines:
-        nice = cond1(line) and cond2(line) and cond3(line)
-        total_nice += nice
-
-    return total_nice
-
-
 def cond4(s):
     pairs = {}
 
     for i, pair in enumerate(pairwise(s)):
         if pair in pairs and (i - pairs[pair] > 1):
             return True
-
         pairs.setdefault(pair, i)
 
     return False
 
 
 def cond5(s):
-    for i in range(len(s) - 2):
-        if s[i] == s[i + 2]:
-            return True
+    return any(s[i - 2] == s[i] for i in range(2, len(s)))
 
-    return False
+
+def solve(s, conditions):
+    lines = s.splitlines()
+    return sum(all(cond(line) for cond in conditions) for line in lines)
+
+
+@timeit
+def part1(s: str):
+    return solve(s, conditions=(cond1, cond2, cond3))
 
 
 @timeit
 def part2(s: str):
-    lines = s.splitlines()
-
-    total_nice = 0
-
-    for line in lines:
-        nice = cond4(line) and cond5(line)
-        total_nice += nice
-
-    return total_nice
+    return solve(s, conditions=(cond4, cond5))
 
 
 def main() -> int:
