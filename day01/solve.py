@@ -4,17 +4,10 @@ from pathlib import Path
 def part1(s: str):
     line = s.splitlines()[0]
 
-    level = 0
+    up = sum(c == '(' for c in line)
+    down = len(line) - up
 
-    for c in line:
-        if c == '(':
-            level += 1
-        elif c == ')':
-            level -= 1
-        else:
-            raise ValueError(c)
-
-    return level
+    return up - down
 
 
 def part2(s: str):
@@ -23,12 +16,7 @@ def part2(s: str):
     level = 0
 
     for i, c in enumerate(line):
-        if c == '(':
-            level += 1
-        elif c == ')':
-            level -= 1
-        else:
-            raise ValueError(c)
+        level += +1 if c == '(' else -1
 
         if level == -1:
             break
